@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#777777">
+<title>Glass Messenger</title>
+
+<style>
+:root {
+    --bg: #777b83;
+    --glass: rgba(35, 37, 43, .68);
+    --glass-light: rgba(255,255,255,.12);
+    --border: rgba(255,255,255,.19);
+    --text: #fff;
+    --muted: #d6d8de;
+    --accent: #dfe8ff;
+    --danger: #ffb7b7;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+html, body {
+    width: 100%;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+body {
+    min-height: 100dvh;
+    padding-bottom: 100px;
+    background:
+        radial-gradient(ellipse at 15% 5%, rgba(255,255,255,.12), transparent 45%),
+        radial-gradient(ellipse at 95% 65%, rgba(35,45,70,.2), transparent 50%),
+        var(--bg);
+}
+button, input, textarea {
+    font: inherit;
+}
+button {
+    cursor: pointer;
+}
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 14px 14px 10px;
+    background: rgba(90,94,103,.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+.brand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+.brand h1 {
+    font-size: 23px;
+    letter-spacing: -.7px;
+}
+.brand small {
+    color: var(--muted);
+    font-size: 11px;
+}
+.searchbox {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: rgba(255,255,255,.13);
+    backdrop-filter: blur(18px);
+}
+.searchbox span {
+    font-size: 18px;
+}
+.searchbox input {
+    min-width: 0;
+    width: 100%;
+    color: white;
+    border: 0;
+    outline: 0;
+    background: transparent;
+}
+input::placeholder, textarea::placeholder {
+    color: rgba(255,255,255,.66);
+}
+main {
+    padding: 12px 14px 24px;
+    max-width: 680px;
+    margin: auto;
+}
+.page {
+    display: none;
+    animation: appear .2s ease;
+}
+.page.active {
+    display: block;
+}
+@keyframes appear {
+    from {opacity: 0; transform: translateY(5px)}
+    to {opacity: 1; transform: translateY(0)}
+}
+.heading {
+    font-size: 25px;
+    margin: 8px 2px 15px;
+    letter-spacing: -.5px;
+}
+.subheading {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+    margin: -7px 2px 16px;
+}
+.card {
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--glass);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.card-inner {
+    padding: 17px;
+}
+.section-title {
+    font-size: 15px;
+    font-weight: 750;
+    margin-bottom: 14px;
+}
+.banner {
+    position: relative;
+    height: 155px;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,.45), transparent 25%),
+        linear-gradient(135deg, #7d8da8, #545c73 50%, #a7b0c0);
+    background-size: cover;
+    background-position: center;
+}
+.banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,.32), transparent 65%);
+    pointer-events: none;
+}
+.banner-label {
+    position: absolute;
+    z-index: 1;
+    left: 15px;
+    bottom: 13px;
+    font-size: 12px;
+    font-weight: 700;
+    text-shadow: 0 1px 5px #0008;
+}
+.banner-button {
+    position: absolute;
+    z-index: 2;
+    right: 12px;
+    top: 12px;
+    border: 1px solid #ffffff55;
+    border-radius: 15px;
+    padding: 9px 11px;
+    background: #2228;
+    color: white;
+    font-size: 12px;
+}
+.profile-identity {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 17px 17px;
+    margin-top: -34px;
+    position: relative;
+}
+.avatar {
+    flex-shrink: 0;
+    width: 82px;
+    height: 82px;
+    border: 4px solid #484c55;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #e1e6f0, #9099aa);
+    color: #414653;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 34px;
+    background-position: center;
+    background-size: cover;
+    overflow: hidden;
+}
+.identity-text {
+    min-width: 0;
+    padding-top: 30px;
+}
+.display-name {
+    font-size: 20px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+.handle {
+    color: #d7deed;
+    font-size: 13px;
+    margin-top: 4px;
+    overflow-wrap: anywhere;
+}
+.bio-preview {
+    padding: 0 18px 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #e5e7ec;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+.field {
+    display: block;
+    margin-bottom: 14px;
+}
+.field:last-child {
+    margin-bottom: 0;
+}
+.field-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #f0f1f5;
+    margin-bottom: 7px;
+}
+.hint {
+    color: #c4c9d3;
+    font-size: 11px;
+    font-weight: 400;
+}
+.control {
+    width: 100%;
+    padding: 13px 14px;
+    color: white;
+    border: 1px solid rgba(255,255,255,.17);
+    border-radius: 15px;
+    outline: none;
+    background: rgba(0,0,0,.17);
+    transition: border .2s, background .2s;
+}
+.control:focus {
+    border-color: rgba(255,255,255,.65);
+    background: rgba(0,0,0,.23);
+}
+textarea.control {
+    resize: vertical;
+    min-height: 86px;
+}
+.username-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,.17);
+    border-radius: 15px;
+    padding-left: 13px;
+    background: rgba(0,0,0,.17);
+}
+.username-wrap:focus-within {
+    border-color: rgba(255,255,255,.65);
+}
+.username-wrap b {
+    color: #e2e7f1;
+}
+.username-wrap input {
+    border: 0;
+    background: transparent;
+    padding-left: 5px;
+}
+.username-wrap input:focus {
+    background: transparent;
+}
+.primary, .secondary, .danger-button {
+    border: 0;
+    border-radius: 15px;
+    padding: 13px 15px;
+    font-size: 14px;
+    font-weight: 750;
+    transition: transform .12s, opacity .12s;
+}
+.primary:active, .secondary:active, .danger-button:active {
+    transform: scale(.98);
+}
+.primary {
+    color: #20232b;
+    background: linear-gradient(135deg, #f5f7ff, #cbd5e9);
+}
+.secondary {
+    color: white;
+    background: rgba(255,255,255,.13);
+    border: 1px solid var(--border);
+}
+.danger-button {
+    color: white;
+    background: rgba(180,45,55,.4);
+    border: 1px solid rgba(255,160,160,.3);
+}
+.full {
+    width: 100%;
+}
+.row {
+    display: flex;
+    gap: 9px;
+}
+.row > * {
+    flex: 1;
+    min-width: 0;
+}
+.notice {
+    display: none;
+    padding: 11px 13px;
+    margin: 0 0 13px;
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.45;
+}
+.notice.show {
+    display: block;
+}
+.notice.error {
+    color: #ffe2e2;
+    background: rgba(140,30,40,.35);
+}
+.notice.success {
+    color: #e2ffe9;
+    background: rgba(30,110,65,.3);
+}
+.notice.info {
+    color: #f0f3ff;
+    background: rgba(50,70,130,.3);
+}
+.rules {
+    font-size: 12px;
+    line-height: 1.6;
+    color: #d8dbe2;
+    margin-top: 11px;
+}
+.result-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+.user-result, .chat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px;
+    text-align: left;
+    color: white;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: rgba(255,255,255,.07);
+}
+.mini-avatar {
+    width: 47px;
+    height: 47px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #313745;
+    background: linear-gradient(145deg, #e1e6f0, #8b98ad);
+    font-size: 22px;
+    background-position: center;
+    background-size: cover;
+}
+.user-info {
+    min-width: 0;
+    flex: 1;
+}
+.user-info strong {
+    display: block;
+    overflow-wrap: anywhere;
+    font-size: 14px;
+}
+.user-info small {
+    display: block;
+    margin-top: 4px;
+    color: #cbd1dd;
+    overflow-wrap: anywhere;
+}
+.empty {
+    padding: 25px 12px;
+    text-align: center;
+    color: #d8dbe2;
+    font-size: 14px;
+    line-height: 1.6;
+}
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    min-height: 330px;
+}
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px;
+    border-bottom: 1px solid var(--border);
+}
+.chat-header .user-info {
+    flex: 1;
+}
+.messages {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-height: 180px;
+    max-height: 45vh;
+    overflow-y: auto;
+}
+.message {
+    max-width: 84%;
+    width: fit-content;
+    padding: 10px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+.message.mine {
+    align-self: flex-end;
+    background: #dbe4f7;
+    color: #252a35;
+    border-bottom-right-radius: 5px;
+}
+.message.theirs {
+    align-self: flex-start;
+    background: rgba(255,255,255,.13);
+    border-bottom-left-radius: 5px;
+}
+.message-compose {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    border-top: 1px solid var(--border);
+}
+.message-compose input {
+    min-width: 0;
+    flex: 1;
+}
+.message-compose button {
+    width: 46px;
+    flex-shrink: 0;
+}
+.bottom-nav {
+    position: fixed;
+    z-index: 20;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: max(12px, env(safe-area-inset-bottom));
+    width: calc(100% - 16px);
+    max-width: 650px;
+    padding: 6px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 25px;
+    background: rgba(43,45,51,.88);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 8px 28px rgba(0,0,0,.22);
+}
+.nav-button {
+    min-width: 0;
+    padding: 9px 2px 7px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: #d4d6dc;
+    background: transparent;
+    border: 0;
+    border-radius: 18px;
+    font-size: 10px;
+    font-weight: 650;
+}
+.nav-button .nav-icon {
+    font-size: 21px;
+    line-height: 1;
+}
+.nav-button.active {
+    color: white;
+    background: rgba(255,255,255,.15);
+}
+.hidden {
+    display: none !important;
+}
+@media (min-width: 600px) {
+    main {
+        padding-top: 20px;
+    }
+    .banner {
+        height: 190px;
+    }
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+    <div class="brand">
+        <div>
+            <h1>Glass Messenger</h1>
+            <small>Общайся по-своему</small>
+        </div>
+        <span aria-hidden="true">✦</span>
+    </div>
+    <div class="searchbox">
+        <span>⌕</span>
+        <input id="globalSearch" placeholder="Поиск пользователей по ЮЗ" autocomplete="off">
+    </div>
+</header>
+
+<main>
+    <!-- СООБЩЕНИЯ -->
+    <section class="page active" id="page-messages">
+        <h2 class="heading">Сообщения</h2>
+        <p class="subheading">Найди пользователя по ЮЗ, чтобы открыть переписку.</p>
+
+        <div class="card">
+            <div class="card-inner">
+                <div class="section-title">Найти пользователя</div>
+                <div class="row">
+                    <input class="control" id="messageSearch" placeholder="@username">
+                    <button class="primary" id="findUserButton">Найти</button>
+                </div>
+                <p class="rules">ЮЗ состоит из 3–15 английских букв. Например: @gol.</p>
+            </div>
+        </div>
+
+        <div id="searchNotice" class="notice info"></div>
+        <div id="searchResults" class="result-list"></div>
+
+        <h3 class="section-title" style="margin:20px 3px 12px">Переписки</h3>
+        <div class="card">
+            <div class="card-inner">
+                <div id="chatList" class="result-list">
+                    <div class="empty">Пока нет переписок.<br>Найди пользователя по ЮЗ.</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="chatArea" class="card hidden">
+            <div class="chat-box">
+                <div class="chat-header">
+                    <button class="secondary" id="backToChats" aria-label="Назад">‹</button>
+                    <div class="mini-avatar" id="chatAvatar">👤</div>
+                    <div class="user-info">
+                        <strong id="chatName">Пользователь</strong>
+                        <small id="chatHandle">@username</small>
+                    </div>
+                </div>
+                <div class="messages" id="messagesList"></div>
+                <form class="message-compose" id="messageForm">
+                    <input class="control" id="messageInput" maxlength="500"
+                           placeholder="Написать сообщение..." autocomplete="off">
+                    <button class="primary" type="submit" aria-label="Отправить">➤</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ЗВОНКИ -->
+    <section class="page" id="page-calls">
+        <h2 class="heading">Звонки</h2>
+        <p class="subheading">Твои звонки будут отображаться здесь.</p>
+        <div class="card">
+            <div class="empty">☎️<br>История звонков пока пуста.</div>
+        </div>
+    </section>
+
+    <!-- ДРУЗЬЯ -->
+    <section class="page" id="page-friends">
+        <h2 class="heading">Друзья</h2>
+        <p class="subheading">Ищи людей по их уникальному ЮЗ.</p>
+        <div class="card">
+            <div class="card-inner">
+                <div class="section-title">Поиск друзей</div>
+                <input class="control" id="friendSearch" placeholder="Введи ЮЗ без @">
+                <button class="primary full" style="margin-top:10px" id="findFriendButton">Найти пользователя</button>
+            </div>
+        </div>
+        <div id="friendNotice" class="notice info"></div>
+        <div id="friendResults" class="result-list"></div>
+    </section>
+
+    <!-- ПРОФИЛЬ -->
+    <section class="page" id="page-profile">
+        <h2 class="heading">Мой профиль</h2>
+        <p class="subheading">Настрой внешний вид и информацию о себе.</p>
+
+        <div id="profileNotice" class="notice"></div>
+
+        <div class="card">
+            <div class="banner" id="bannerPreview">
+                <button class="banner-button" id="chooseBanner">✦ Изменить баннер</button>
+                <div class="banner-label">МОЙ ПРОФИЛЬ</div>
+            </div>
+            <div class="profile-identity">
+                <div class="avatar" id="avatarPreview">👤</div>
+                <div class="identity-text">
+                    <div class="display-name" id="namePreview">Пользователь</div>
+                    <div class="handle" id="handlePreview">@username</div>
+                </div>
+            </div>
+            <div class="bio-preview" id="bioPreview">Расскажи немного о себе.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-inner">
+                <div class="section-title">Внешний вид</div>
+                <div class="row">
+                    <button class="secondary" id="chooseAvatar">📷 Аватарка</button>
+                    <button class="secondary" id="chooseBanner2">🖼️ Баннер</button>
+                </div>
+                <p class="rules">Выбери изображение из галереи. Рекомендуется использовать файлы до 2 МБ.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-inner">
+                <div class="section-title">Личные данные</div>
+
+                <label class="field">
+                    <span class="field-label">Никнейм <span class="hint">Видят другие</span></span>
+                    <input class="control" id="nicknameInput" maxlength="32"
+                           placeholder="Например, Руслан">
+                </label>
+
+                <label class="field">
+                    <span class="field-label">Уникальный ЮЗ <span class="hint">3–15 букв</span></span>
+                    <div class="username-wrap">
+                        <b>@</b>
+                        <input class="control" id="usernameInput" maxlength="15"
+                               placeholder="username" autocomplete="off"
+                               autocapitalize="none" spellcheck="false">
+                    </div>
+                    <p class="rules">Только английские буквы A–Z. Без цифр, пробелов и символов. ЮЗ должен быть уникальным.</p>
+                </label>
+
+                <label class="field">
+                    <span class="field-label">О себе <span class="hint">До 160 символов</span></span>
+                    <textarea class="control" id="bioInput" maxlength="160"
+                              placeholder="Напиши что-нибудь о себе..."></textarea>
+                </label>
+
+                <button class="primary full" id="saveProfile">Сохранить изменения</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-inner">
+                <div class="section-title">Проверка текста</div>
+                <p class="rules" style="margin-top:0;margin-bottom:12px">
+                    Если никнейм или описание содержат оскорбления из встроенного списка, приложение предупредит и не сохранит такой текст.
+                </p>
+                <button class="secondary full" id="resetProfile">Сбросить локальный профиль</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<nav class="bottom-nav">
+    <button class="nav-button active" data-page="messages">
+        <span class="nav-icon">▤</span><span>Сообщения</span>
+    </button>
+    <button class="nav-button" data-page="calls">
+        <span class="nav-icon">♧</span><span>Звонки</span>
+    </button>
+    <button class="nav-button" data-page="friends">
+        <span class="nav-icon">♙</span><span>Друзья</span>
+    </button>
+    <button class="nav-button" data-page="profile">
+        <span class="nav-icon">◉</span><span>Профиль</span>
+    </button>
+</nav>
+
+<input type="file" id="avatarFile" accept="image/*" hidden>
+<input type="file" id="bannerFile" accept="image/*" hidden>
+
+<script>
+(() => {
+    "use strict";
+
+    const $ = id => document.getElementById(id);
+    const PROFILE_KEY = "glass_messenger_profile_v1";
+    const DIRECTORY_KEY = "glass_messenger_local_directory_v1";
+    const CHATS_KEY = "glass_messenger_local_chats_v1";
+
+    const defaultProfile = {
+        nickname: "Пользователь",
+        username: "",
+        bio: "",
+        avatar: "",
+        banner: ""
+    };
+
+    let profile = loadJSON(PROFILE_KEY, defaultProfile);
+    let directory = loadJSON(DIRECTORY_KEY, {});
+    let chats = loadJSON(CHATS_KEY, {});
+    let activeChat = null;
+
+    function loadJSON(key, fallback) {
+        try {
+            const value = localStorage.getItem(key);
+            return value ? JSON.parse(value) : structuredCloneSafe(fallback);
+        } catch {
+            return structuredCloneSafe(fallback);
+        }
+    }
+
+    function structuredCloneSafe(value) {
+        return JSON.parse(JSON.stringify(value));
+    }
+
+    function saveJSON(key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    function normalizeUsername(value) {
+        return value.trim().replace(/^@+/, "").toLowerCase();
+    }
+
+    function validUsername(value) {
+        return /^[a-zA-Z]{3,15}$/.test(value);
+    }
+
+    // Примерный фильтр нежелательных оскорблений.
+    // Его список не может распознать все варианты и языки.
+    const blockedWords = [
+        "сука", "блядь", "блять", "хуй", "пизда", "ебать",
+        "мудак", "долбоеб", "дебил", "fuck", "shit", "bitch",
+        "asshole", "nigger"
+    ];
+
+    function containsBadText(value) {
+        const text = value.toLowerCase().replace(/ё/g, "е");
+        return blockedWords.some(word => text.includes(word));
+    }
+
+    function showNotice(id, message, type = "info") {
+        const element = $(id);
+        if (!element) return;
+        element.textContent = message;
+        element.className = "notice show " + type;
+    }
+
+    function hideNotice(id) {
+        const element = $(id);
+        if (element) element.className = "notice";
+    }
+
+    function renderProfile() {
+        $("nicknameInput").value = profile.nickname || "";
+        $("usernameInput").value = profile.username || "";
+        $("bioInput").value = profile.bio || "";
+
+        $("namePreview").textContent = profile.nickname || "Пользователь";
+        $("handlePreview").textContent = profile.username
+            ? "@" + profile.username
+            : "@не_установлен";
+        $("bioPreview").textContent = profile.bio || "Расскажи немного о себе.";
+
+        if (profile.avatar) {
+            $("avatarPreview").style.backgroundImage = `url("${profile.avatar}")`;
+            $("avatarPreview").textContent = "";
+        } else {
+            $("avatarPreview").style.backgroundImage = "";
+            $("avatarPreview").textContent = "👤";
+        }
+
+        if (profile.banner) {
+            $("bannerPreview").style.backgroundImage = `url("${profile.banner}")`;
+            $("bannerPreview").style.backgroundSize = "cover";
+            $("bannerPreview").style.backgroundPosition = "center";
+        } else {
+            $("bannerPreview").style.backgroundImage = "";
+        }
+    }
+
+    function syncDirectory() {
+        // Локальный реестр этого браузера, а не глобальная база пользователей.
+        if (profile.username) {
+            directory[profile.username] = {
+                username: profile.username,
+                nickname: profile.nickname || "Пользователь",
+                bio: profile.bio || "",
+                avatar: profile.avatar || ""
+            };
+            saveJSON(DIRECTORY_KEY, directory);
+        }
+    }
+
+    function goToPage(pageName) {
+        document.querySelectorAll(".page").forEach(page => {
+            page.classList.toggle("active", page.id === "page-" + pageName);
+        });
+        document.querySelectorAll(".nav-button").forEach(button => {
+            button.classList.toggle("active", button.dataset.page === pageName);
+        });
+        window.scrollTo(0, 0);
+    }
+
+    document.querySelectorAll(".nav-button").forEach(button => {
+        button.addEventListener("click", () => goToPage(button.dataset.page));
+    });
+
+    function saveProfile() {
+        hideNotice("profileNotice");
+
+        const nickname = $("nicknameInput").value.trim();
+        const username = normalizeUsername($("usernameInput").value);
+        const bio = $("bioInput").value.trim();
+
+        if (!nickname) {
+            showNotice("profileNotice", "Напиши никнейм перед сохранением.", "error");
+            return;
+        }
+
+        if (!validUsername(username)) {
+            showNotice("profileNotice",
+                "ЮЗ должен содержать от 3 до 15 английских букв. Например: gol.",
+                "error");
+            return;
+        }
+
+        if (containsBadText(nickname) || containsBadText(bio)) {
+            showNotice("profileNotice",
+                "⚠️ Так писать нельзя. Убери оскорбительные слова из никнейма или описания.",
+                "error");
+            return;
+        }
+
+        // Проверяем занятость ЮЗ в локальном реестре.
+        const oldUsername = profile.username;
+        if (directory[username] && username !== oldUsername) {
+            showNotice("profileNotice",
+                "Этот ЮЗ уже занят в локальном реестре. Попробуй другой.",
+                "error");
+            return;
+        }
+
+        // Не оставляем старый ЮЗ занятым, если пользователь изменил его.
+        if (oldUsername && oldUsername !== username) {
+            delete directory[oldUsername];
+        }
+
+        profile.nickname = nickname;
+        profile.username = username;
+        profile.bio = bio;
+
+        if (!saveJSON(PROFILE_KEY, profile)) {
+            showNotice("profileNotice",
+                "Не удалось сохранить данные. Возможно, память браузера заполнена.",
+                "error");
+            return;
+        }
+
+        syncDirectory();
+        renderProfile();
+        showNotice("profileNotice", "✓ Профиль сохранён!", "success");
+    }
+
+    $("saveProfile").addEventListener("click", saveProfile);
+
+    function chooseImage(inputId, field, maxSizeMB) {
+        const file = $(inputId).files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            showNotice("profileNotice", "Выбери файл изображения.", "error");
+            return;
+        }
+
+        if (file.size > maxSizeMB * 1024 * 1024) {
+            showNotice("profileNotice",
+                `Изображение слишком большое. Максимум ${maxSizeMB} МБ.`,
+                "error");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            const previousValue = profile[field];
+            profile[field] = reader.result;
+
+            if (!saveJSON(PROFILE_KEY, profile)) {
+                profile[field] = previousValue;
+                showNotice("profileNotice",
+                    "Не удалось сохранить изображение. Попробуй файл поменьше.",
+                    "error");
+                return;
+            }
+
+            renderProfile();
+            syncDirectory();
+            showNotice("profileNotice", "Изображение обновлено ✓", "success");
+        };
+        reader.onerror = () => {
+            showNotice("profileNotice", "Не удалось прочитать изображение.", "error");
+        };
+        reader.readAsDataURL(file);
+    }
+
+    $("chooseAvatar").addEventListener("click", () => $("avatarFile").click());
+    $("chooseBanner").addEventListener("click", () => $("bannerFile").click());
+    $("chooseBanner2").addEventListener("click", () => $("bannerFile").click());
+
+    $("avatarFile").addEventListener("change", () => chooseImage("avatarFile", "avatar", 2));
+    $("bannerFile").addEventListener("change", () => chooseImage("bannerFile", "banner", 2));
+
+    function makeUserResult(user) {
+        const button = document.createElement("button");
+        button.className = "user-result";
+
+        const avatar = document.createElement("div");
+        avatar.className = "mini-avatar";
+        if (user.avatar) {
+            avatar.style.backgroundImage = `url("${user.avatar}")`;
+            avatar.textContent = "";
+        } else {
+            avatar.textContent = "👤";
+        }
+
+        const info = document.createElement("div");
+        info.className = "user-info";
+
+        const name = document.createElement("strong");
+        name.textContent = user.nickname || "Пользователь";
+
+        const handle = document.createElement("small");
+        handle.textContent = "@" + user.username;
+
+        info.append(name, handle);
+        button.append(avatar, info);
+
+        button.addEventListener("click", () => openChat(user.username));
+        return button;
+    }
+
+    function searchUser(rawQuery, resultsId, noticeId) {
+        const username = normalizeUsername(rawQuery);
+        const results = $(resultsId);
+        results.replaceChildren();
+        hideNotice(noticeId);
+
+        if (!username) {
+            showNotice(noticeId, "Введи ЮЗ пользователя для поиска.", "info");
+            return;
+        }
+
+        if (!/^[a-zA-Z]{3,15}$/.test(username)) {
+            showNotice(noticeId, "ЮЗ должен содержать 3–15 английских букв.", "error");
+            return;
+        }
+
+        const user = directory[username];
+
+        if (!user) {
+            showNotice(noticeId,
+                "Пользователь не найден в локальном реестре этого браузера. Для глобального поиска нужен сервер.",
+                "info");
+            return;
+        }
+
+        if (username === profile.username) {
+            showNotice(noticeId, "Это твой собственный профиль.", "info");
+            return;
+        }
+
+        results.appendChild(makeUserResult(user));
+        showNotice(noticeId, "Пользователь найден. Нажми на него, чтобы открыть чат.", "success");
+    }
+
+    $("findUserButton").addEventListener("click", () => {
+        searchUser($("messageSearch").value, "searchResults", "searchNotice");
+    });
+    $("findFriendButton").addEventListener("click", () => {
+        searchUser($("friendSearch").value, "friendResults", "friendNotice");
+    });
+    $("globalSearch").addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            $("messageSearch").value = event.target.value;
+            goToPage("messages");
+            searchUser(event.target.value, "searchResults", "searchNotice");
+        }
+    });
+
+    function getChatKey(username) {
+        return [profile.username, username].sort().join("__");
+    }
+
+    function openChat(username) {
+        if (!profile.username) {
+            goToPage("profile");
+            showNotice("profileNotice", "Сначала создай свой ЮЗ в настройках профиля.", "info");
+            return;
+        }
+
+        if (username === profile.username) return;
+
+        const user = directory[username];
+        if (!user) return;
+
+        activeChat = username;
+        $("chatName").textContent = user.nickname || "Пользователь";
+        $("chatHandle").textContent = "@" + user.username;
+
+        if (user.avatar) {
+            $("chatAvatar").style.backgroundImage = `url("${user.avatar}")`;
+            $("chatAvatar").textContent = "";
+        } else {
+            $("chatAvatar").style.backgroundImage = "";
+            $("chatAvatar").textContent = "👤";
+        }
+
+        $("chatArea").classList.remove("hidden");
+        $("chatArea").scrollIntoView({ behavior: "smooth", block: "start" });
+        renderMessages();
+    }
+
+    function renderMessages() {
+        const list = $("messagesList");
+        list.replaceChildren();
+
+        if (!activeChat) return;
+        const key = getChatKey(activeChat);
+        const items = chats[key] || [];
+
+        if (!items.length) {
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "Начни переписку!";
+            list.appendChild(empty);
+            return;
+        }
+
+        items.forEach(item => {
+            const bubble = document.createElement("div");
+            bubble.className = "message " + (item.sender === profile.username ? "mine" : "theirs");
+            bubble.textContent = item.text;
+            list.appendChild(bubble);
+        });
+
+        list.scrollTop = list.scrollHeight;
+    }
+
+    $("messageForm").addEventListener("submit", event => {
+        event.preventDefault();
+        if (!activeChat) return;
+
+        const text = $("messageInput").value.trim();
+        if (!text) return;
+
+        if (containsBadText(text)) {
+            alert("⚠️ Так писать нельзя. Измени сообщение и попробуй снова.");
+            return;
+        }
+
+        const key = getChatKey(activeChat);
+        if (!chats[key]) chats[key] = [];
+
+        chats[key].push({
+            sender: profile.username,
+            text,
+            time: Date.now()
+        });
+
+        if (!saveJSON(CHATS_KEY, chats)) {
+            alert("Не удалось сохранить сообщение в памяти браузера.");
+            return;
+        }
+
+        $("messageInput").value = "";
+        renderMessages();
+        renderChatList();
+    });
+
+    $("backToChats").addEventListener("click", () => {
+        $("chatArea").classList.add("hidden");
+        activeChat = null;
+    });
+
+    function renderChatList() {
+        const list = $("chatList");
+        list.replaceChildren();
+
+        const keys = Object.keys(chats);
+        const relatedKeys = keys.filter(key =>
+            key.split("__").includes(profile.username)
+        );
+
+        if (!profile.username || !relatedKeys.length) {
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.innerHTML = "Пока нет переписок.<br>Найди пользователя по ЮЗ.";
+            list.appendChild(empty);
+            return;
+        }
+
+        relatedKeys.forEach(key => {
+            const names = key.split("__");
+            const other = names.find(name => name !== profile.username);
+            const user = directory[other];
+            if (!user) return;
+
+            const button = makeUserResult(user);
+            const last = (chats[key] || []).slice(-1)[0];
+            if (last) {
+                const small = button.querySelector("small");
+                small.textContent = last.text;
+            }
+            list.appendChild(button);
+        });
+    }
+
+    $("resetProfile").addEventListener("click", () => {
+        const confirmed = confirm(
+            "Сбросить локальный профиль и удалить его из локального реестра?"
+        );
+        if (!confirmed) return;
+
+        if (profile.username) delete directory[profile.username];
+
+        profile = structuredCloneSafe(defaultProfile);
+        saveJSON(PROFILE_KEY, profile);
+        saveJSON(DIRECTORY_KEY, directory);
+        renderProfile();
+        renderChatList();
+        showNotice("profileNotice", "Локальный профиль сброшен.", "success");
+    });
+
+    renderProfile();
+    syncDirectory();
+    renderChatList();
+})();
+</script>
+</body>
+</html>
